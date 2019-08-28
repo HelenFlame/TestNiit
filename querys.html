@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SQL</title>
+	<style>
+		body{
+			font-family: sans-serif;
+		}
+		table{
+			border-collapse: collapse;
+			border: 1px solid;
+		}
+		td,th{
+			border: 1px solid;
+			padding: 5px;
+		}
+		code{
+			font-size: 14px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Запросы в БД</h1>
+	<h2>Вся таблица</h2>
+	<table>
+		<caption>Вывод всей таблицы из БД</caption>
+			<tr>
+				<th>Имя</th>
+				<th>ЗП</th>
+				<th>Депортамент</th>
+				<th>День рождения</th>
+				<th>Город</th>
+				<th>Пол</th>
+
+			</tr>
+			<tr>
+				<td>Сергей</td>
+				<td>25000</td>
+				<td>2</td>
+				<td>1987-02-27</td>
+				<td>Архангельск</td>
+				<td>male</td>
+			</tr>
+			<tr>
+				<td>Елена</td>
+				<td>26000</td>
+				<td>2</td>
+				<td>1983-07-04</td>
+				<td>Тверь</td>
+				<td>female</td>
+			</tr>
+			<tr>
+				<td>Петр</td>
+				<td>30000</td>
+				<td>3</td>
+				<td>1985-08-20</td>
+				<td>Андреаполь</td>
+				<td>male</td>
+			</tr>
+			<tr>
+				<td>Наташа</td>
+				<td>35000</td>
+				<td>3</td>
+				<td>1980-08-10</td>
+				<td>Старица</td>
+				<td>female</td>
+			</tr>
+			<tr>
+				<td>Борис</td>
+				<td>32000</td>
+				<td>2</td>
+				<td>1990-09-05</td>
+				<td>Углич</td>
+				<td>male</td>
+			</tr>							
+		</table>
+	<h2>1. На выборку всех сотрудников, упорядоченных по полю name по алфавиту 
+	проживающих в городах, начинающихся с буквы А;</h2>
+	<p><code>mysql > SELECT * FROM employee WHERE city LIKE 'А%' ORDER BY name;</code></p>
+	<table>
+	<caption>Вывод запроса 1</caption>
+		<tr>
+			<th>Имя</th>
+			<th>ЗП</th>
+			<th>Депортамент</th>
+			<th>День рождения</th>
+			<th>Город</th>
+			<th>Пол</th>
+
+		</tr>
+		<tr>
+			<td>Петр</td>
+			<td>30000</td>
+			<td>3</td>
+			<td>1985-08-20</td>
+			<td>Андреаполь</td>
+			<td>male</td>
+		</tr>
+		<tr>
+			<td>Сергей</td>
+			<td>25000</td>
+			<td>2</td>
+			<td>1987-02-27</td>
+			<td>Архангельск</td>
+			<td>male</td>
+		</tr>							
+	</table>
+	<h2>2. На выборку сотрудников, у которых в день выполнения запроса день рождения</h2>
+	<p><code>mysql > SELECT * FROM employee WHERE DAY(birthday) = EXTRACT(DAY FROM CURDATE());</code></p>
+	<table>
+	<caption>Вывод запроса 2</caption>
+		<tr>
+			<th>Имя</th>
+			<th>ЗП</th>
+			<th>Депортамент</th>
+			<th>День рождения</th>
+			<th>Город</th>
+			<th>Пол</th>
+
+		</tr>
+		<tr>
+			<td>Сергей</td>
+			<td>25000</td>
+			<td>2</td>
+			<td>1987-02-28</td>
+			<td>Архангельск</td>
+			<td>male</td>
+		</tr>					
+	</table>
+	<h2>3. На выборку сотрудников с минимальной и максимальной заработной платой</h2>
+	<p><code>mysql > SELECT * FROM employee a1 WHERE salary=(SELECT MAX(salary) FROM employee) <br>
+		> UNION SELECT * FROM employee a2 WHERE salary=(SELECT MIN(salary) FROM employee);</code></p>
+	<table>
+	<caption>Вывод запроса 3</caption>
+	    <tr>
+			<th>Имя</th>
+			<th>ЗП</th>
+			<th>Депортамент</th>
+			<th>День рождения</th>
+			<th>Город</th>
+			<th>Пол</th>
+
+		</tr>
+		<tr>
+			<td>Наташа</td>
+			<td>35000</td>
+			<td>3</td>
+			<td>1980-08-10</td>
+			<td>Старица</td>
+			<td>female</td>
+			</tr>
+		<tr>
+			<td>Сергей</td>
+			<td>25000</td>
+			<td>2</td>
+			<td>1987-02-27</td>
+			<td>Архангельск</td>
+			<td>male</td>
+		</tr>							
+	</table>
+	<h2>4. На выборку максимальной заработной платы в каждом отделе;</h2>
+	<p><code>mysql > SELECT * FROM employee a1 WHERE salary=(SELECT MAX(salary) FROM employee WHERE department_id=a1.department_id);</code></p>
+	<table>
+	<caption>Вывод запроса 4</caption>
+	    <tr>
+			<th>Имя</th>
+			<th>ЗП</th>
+			<th>Депортамент</th>
+			<th>День рождения</th>
+			<th>Город</th>
+			<th>Пол</th>
+
+		</tr>
+		<tr>
+			<td>Наташа</td>
+			<td>35000</td>
+			<td>3</td>
+			<td>1980-08-10</td>
+			<td>Старица</td>
+			<td>female</td>
+		</tr>
+		<tr>
+			<td>Борис</td>
+			<td>32000</td>
+			<td>2</td>
+			<td>1990-09-05</td>
+			<td>Углич</td>
+			<td>male</td>
+		</tr>					
+	</table>	
+</body>
+</html>
